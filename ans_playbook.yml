@@ -1,0 +1,50 @@
+- hosts: localhost
+  tasks:
+  - name: stop current running container
+    command: "{{ item }}"
+    with_items:
+    - docker stop coordinator1
+    - docker stop coordinator2
+    - docker stop worker1
+    - docker stop worker2
+    - docker stop frontend1
+    - docker stop frontend2
+    ignore_errors: yes #container is not available
+    
+  - name: remove stopped container
+    command: "{{ item }}"
+    with_items:
+    - docker rm coordinator1
+    - docker rm coordinator2
+    - docker rm worker1
+    - docker rm worker2
+    - docker rm frontend1
+    - docker rm frontend2
+    
+  - name: remove image
+    command: "{{ item }}"
+    with_items:
+    - docker rmi search-node
+    - docker rmi search-frontend
+    ignore_errors: yes
+    
+  - name: build docker image  using jar file
+    command: "{{ item }}"
+    with_items:
+    - cd distributed-search-cluster-node
+    - docker build -t search-node .
+    args:
+    
+  - name: build docker image search node using jar file
+    command: "{{ item }}"
+    with_items:
+    - cd distributed-search-cluster-node
+    - docker build -t search-node .
+    args:
+    
+  - name: build docker image search frontend using jar file
+    command: "{{ item }}"
+    with_items:
+    - cd distributed-search-frontend
+    - docker build -t search-frontend .
+    args:
