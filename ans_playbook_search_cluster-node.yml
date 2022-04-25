@@ -1,0 +1,31 @@
+- hosts: localhost
+  tasks:
+  - name: stop current running container
+    command: "{{ item }}"
+    with_items:
+    - docker stop coordinator1
+    - docker stop coordinator2
+    - docker stop worker1
+    - docker stop worker2
+    ignore_errors: yes #container is not available
+    
+  - name: remove stopped container
+    command: "{{ item }}"
+    with_items:
+    - docker rm coordinator1
+    - docker rm coordinator2
+    - docker rm worker1
+    - docker rm worker2
+    ignore_errors: yes #container is not available
+    
+  - name: remove image
+    command: "{{ item }}"
+    with_items:
+    - docker rmi search-node
+    ignore_errors: yes
+    
+  - name: build docker image  using jar file
+    command: "{{ item }}"
+    with_items:
+    - docker build -t search-node ./distributed-search-cluster-node
+    args:
